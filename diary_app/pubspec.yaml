@@ -32,12 +32,13 @@ dependencies:
     sdk: flutter
   sqflite: ^2.3.3  # For SQLite local database
   path: ^1.9.0     # Helper for file paths (required for sqflite)
-  firebase_core: ^3.6.0  # Firebase setup
-  firebase_auth: ^5.3.1  # Firebase authentication only
+  firebase_core: ^4.2.1  # Firebase setup
+  firebase_auth: ^6.1.2  # Firebase authentication only
   local_auth: ^2.3.0     # For fingerprint/biometric auth
   no_screenshot: ^0.3.1  # To disable screenshots on Android/iOS
-  intl: ^0.19.0          # For date formatting
+  intl: ^0.20.2          # For date formatting
   shared_preferences: ^2.3.2
+  google_fonts: ^6.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -52,7 +53,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
