@@ -1,7 +1,7 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:diary_app/services/auth_service.dart';        // Absolute import
+import 'package:diary_app/services/auth_service.dart';
 import 'package:diary_app/constants.dart';
 import 'fingerprint_enable_screen.dart';
 
@@ -18,6 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLogin = true;
   bool _loading = false;
+
+  // New flag to toggle password visibility
+  bool _obscurePassword = true;
 
   final AuthService _auth = AuthService();
 
@@ -39,11 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo
                   Icon(Icons.book_outlined, size: 100, color: AppColors.primary),
                   const SizedBox(height: 30),
-
-                  // Title
                   Text(
                     "Welcome to Daily Diary",
                     style: GoogleFonts.playfairDisplay(
@@ -53,12 +53,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 50),
-
-                  // Form
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
+                        // Email
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -67,37 +66,39 @@ class _LoginScreenState extends State<LoginScreen> {
                             prefixIcon: Icon(Icons.email_outlined),
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter your email";
-                            }
-                            if (!value.contains('@')) {
-                              return "Please enter a valid email";
-                            }
+                            if (value == null || value.isEmpty) return "Please enter your email";
+                            if (!value.contains('@')) return "Please enter a valid email";
                             return null;
                           },
                         ),
                         const SizedBox(height: 16),
 
+                        // Password with toggle
                         TextFormField(
                           controller: _passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
                             labelText: "Password",
-                            prefixIcon: Icon(Icons.lock_outline),
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter your password";
-                            }
-                            if (value.length < 6) {
-                              return "Password must be at least 6 characters";
-                            }
+                            if (value == null || value.isEmpty) return "Please enter your password";
+                            if (value.length < 6) return "Password must be at least 6 characters";
                             return null;
                           },
                         ),
                         const SizedBox(height: 32),
 
-                        // Login / Register Button
                         SizedBox(
                           width: double.infinity,
                           height: 56,
@@ -116,10 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                           ),
                         ),
-
                         const SizedBox(height: 16),
-
-                        // Toggle Login / Register
                         TextButton(
                           onPressed: () {
                             setState(() {
@@ -145,28 +143,21 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // MAIN LOGIN / REGISTER LOGIC
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _loading = true);
-
     try {
       if (_isLogin) {
-        // LOGIN
         await _auth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
       } else {
-        // REGISTER
         await _auth.registerWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
       }
-
-      // Success → Go to fingerprint setup (first time) or home
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const FingerprintEnableScreen()),
@@ -175,16 +166,11 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.redAccent,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.redAccent),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
+      if (mounted) setState(() => _loading = false);
     }
   }
 }
