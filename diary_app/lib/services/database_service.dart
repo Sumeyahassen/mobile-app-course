@@ -15,23 +15,28 @@ class DatabaseService {
   }
 
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), 'diary.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE entries (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL
-          )
-        ''');
-      },
-    );
-  }
-
+  String path = join(await getDatabasesPath(), 'diary.db');
+  return await openDatabase(
+    path,
+    version: 2,  // ← Increased version to migrate
+    onCreate: (db, version) async {
+      await db.execute('''
+        CREATE TABLE entries (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          date TEXT NOT NULL,
+          title TEXT NOT NULL,
+          content TEXT NOT NULL,
+          mood TEXT NOT NULL
+        )
+      ''');
+    },
+    onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        await db.execute('ALTER TABLE entries ADD COLUMN mood TEXT DEFAULT "neutral"');
+      }
+    },
+  );
+}
   Future<int> insertEntry(DiaryEntry entry) async {
     final db = await database;
     return await db.insert('entries', entry.toMap());
