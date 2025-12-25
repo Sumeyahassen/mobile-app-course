@@ -9,9 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  just_audio: ^0.9.39
+  just_audio: ^0.9.40  # Updated to latest stable (as of Dec 2025)
   provider: ^6.1.2
+  just_audio_media_kit: ^2.1.0  # Provides media_kit backend for just_audio on desktop
+  media_kit_libs_linux: ^1.0.2   # Native Linux audio libraries (required for Linux support)
   flutter_launcher_icons: ^0.13.1  # Optional for custom icon
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
@@ -19,4 +26,10 @@ flutter:
   assets:
     - assets/audio/
     - assets/data/nasheeds.json
-    - assets/images/  # If you add background image
+    - assets/images/  # For background and icon images
+
+# Optional: Configuration for flutter_launcher_icons (uncomment if using custom icon)
+# flutter_launcher_icons:
+#   android: "launcher_icon"
+#   ios: true
+#   image_path: "assets/images/icon.png"

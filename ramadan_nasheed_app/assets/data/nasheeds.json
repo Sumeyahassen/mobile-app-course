@@ -1,30 +1,79 @@
 [
   {
     "id": 1,
-    "title": "Nasheed Islamic Background",
+    "title": "Blessings_of_Ramadan_",
     "artist": "SufiSama99",
-    "language": "Arabic",
-    "file": "nasheed_islamic_background.mp3"
+    "language": "English",
+    "file": "nasheed_1.mp3"
   },
   {
     "id": 2,
-    "title": "Peaceful Nasheed",
+    "title": "Blessings_of_Ramadan_",
     "artist": "Anonymous",
-    "language": "Arabic",
-    "file": "peaceful_nasheed.mp3"
+    "language": "English",
+    "file": "nasheed_2.mp3"
   },
   {
     "id": 3,
-    "title": "Allahu - Labbayk",
+    "title": "Maher_Zain_-_Ramadan__English_Nasheed",
     "artist": "Unknown",
     "language": "English",
-    "file": "allahu_labbayk.mp3"
+    "file": "nasheed_3.mp3"
   },
   {
     "id": 4,
     "title": "My Lord",
     "artist": "Unknown",
     "language": "English",
-    "file": "my_lord.mp3"
+    "file": "nasheed_4.mp3"
+  },
+    {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "nasheed_5.mp3"
+  },
+    {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "nasheed_6.mp3"
+  },
+    {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "nasheed_7.mp3"
+  },
+   {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "nasheed_8.mp3"
+  },
+   {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "nasheed_9.mp3"
+  },
+    {
+      "id": 4,
+      "title": "My Lord",
+      "artist": "Unknown",
+      "language": "English",
+      "file": "nasheed_10.mp3"
+    },
+     {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "nasheed_11.mp3"
   }
 ]
