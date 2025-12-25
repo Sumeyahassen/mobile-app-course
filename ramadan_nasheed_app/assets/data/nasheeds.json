@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Nasheed Islamic Background",
+    "artist": "SufiSama99",
+    "language": "Arabic",
+    "file": "nasheed_islamic_background.mp3"
+  },
+  {
+    "id": 2,
+    "title": "Peaceful Nasheed",
+    "artist": "Anonymous",
+    "language": "Arabic",
+    "file": "peaceful_nasheed.mp3"
+  },
+  {
+    "id": 3,
+    "title": "Allahu - Labbayk",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "allahu_labbayk.mp3"
+  },
+  {
+    "id": 4,
+    "title": "My Lord",
+    "artist": "Unknown",
+    "language": "English",
+    "file": "my_lord.mp3"
+  }
+]
