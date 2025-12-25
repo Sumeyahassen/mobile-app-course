@@ -15,8 +15,15 @@ class MiniPlayer extends StatelessWidget {
       stream: AudioService.player.sequenceStateStream,
       builder: (context, snapshot) {
         final state = snapshot.data;
-        if (state?.sequence.isEmpty ?? true) return const SizedBox();
-        final currentNasheed = nasheeds[state!.currentIndex];
+        final sequence = state?.sequence;
+
+        // Hide mini player if no playlist or nothing loaded yet
+        if (sequence == null || sequence.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final currentIndex = state!.currentIndex ?? 0;  // Safe default
+        final currentNasheed = nasheeds[currentIndex];
 
         return Container(
           decoration: BoxDecoration(
@@ -36,16 +43,17 @@ class MiniPlayer extends StatelessWidget {
                 stream: AudioService.player.positionStream,
                 builder: (context, posSnapshot) {
                   final position = posSnapshot.data ?? Duration.zero;
-                  final duration = AudioService.player.duration ?? Duration.zero;
+                  final duration = AudioService.player.duration ?? Duration(seconds: 1); // Prevent zero duration
+
                   return SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
                       trackHeight: 4,
                     ),
                     child: Slider(
-                      min: 0,
-                      max: duration.inSeconds.toDouble(),
-                      value: position.inSeconds.toDouble().clamp(0, duration.inSeconds.toDouble()),
+                      min: 0.0,
+                      max: duration.inSeconds > 0 ? duration.inSeconds.toDouble() : 1.0,
+                      value: position.inSeconds.toDouble().clamp(0.0, duration.inSeconds.toDouble()),
                       onChanged: (value) => AudioService.player.seek(Duration(seconds: value.toInt())),
                       activeColor: Colors.amber,
                       inactiveColor: Colors.green.shade700,
@@ -66,8 +74,10 @@ class MiniPlayer extends StatelessWidget {
                       stream: AudioService.player.playingStream,
                       builder: (context, snapshot) {
                         final playing = snapshot.data ?? false;
-                        return Icon(playing ? Icons.pause_circle_filled : Icons.play_circle_filled,
-                            color: Colors.amber);
+                        return Icon(
+                          playing ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                          color: Colors.amber,
+                        );
                       },
                     ),
                     onPressed: AudioService.togglePlayPause,
@@ -79,10 +89,21 @@ class MiniPlayer extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        '${currentNasheed.title} • ${currentNasheed.artist}',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            currentNasheed.title,
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            currentNasheed.artist,
+                            style: const TextStyle(color: Colors.amber, fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ),
