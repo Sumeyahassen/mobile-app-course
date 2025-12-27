@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ramadan_nasheed_app/services/audio_player_service.dart';
 import '../models/nasheed_model.dart';
-import '../services/audio_player_service.dart';
 import '../widgets/nasheed_list_item.dart';
 import '../widgets/mini_player.dart';
 
