@@ -16,11 +16,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController(); // NEW
+
   bool _isLogin = true;
   bool _loading = false;
-
-  // New flag to toggle password visibility
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true; // NEW
 
   final AuthService _auth = AuthService();
 
@@ -28,7 +29,71 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose(); // NEW
     super.dispose();
+  }
+
+  // Forgot Password Function
+  Future<void> _forgotPassword() async {
+    final emailController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text("Reset Password", style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("We'll send a password reset link to your email."),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email_outlined),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text("Send"),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      final email = emailController.text.trim();
+      if (email.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please enter your email")),
+        );
+        return;
+      }
+
+      try {
+        await _auth.sendPasswordResetEmail(email: email); // You'll add this method
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Password reset email sent! Check your inbox (and spam)."),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${e.toString()}"), backgroundColor: Colors.redAccent),
+        );
+      }
+    }
   }
 
   @override
@@ -42,8 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Logo
                   Icon(Icons.book_outlined, size: 100, color: AppColors.primary),
                   const SizedBox(height: 30),
+
+                  // Title
                   Text(
                     "Welcome to Daily Diary",
                     style: GoogleFonts.playfairDisplay(
@@ -53,6 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 50),
+
+                  // Form
                   Form(
                     key: _formKey,
                     child: Column(
@@ -73,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Password with toggle
+                        // Password
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
@@ -81,14 +151,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             labelText: "Password",
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
+                              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                             ),
                           ),
                           validator: (value) {
@@ -97,17 +161,53 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 32),
 
+                        // Confirm Password (only in Register mode)
+                        if (!_isLogin) ...[
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: _obscureConfirmPassword,
+                            decoration: InputDecoration(
+                              labelText: "Confirm Password",
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value != _passwordController.text) return "Passwords do not match";
+                              return null;
+                            },
+                          ),
+                        ],
+
+                        const SizedBox(height: 20),
+
+                        // Forgot Password Link (only in Login mode)
+                        if (_isLogin)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: _forgotPassword,
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(color: AppColors.primary),
+                              ),
+                            ),
+                          ),
+
+                        const SizedBox(height: 12),
+
+                        // Login / Register Button
                         SizedBox(
                           width: double.infinity,
                           height: 56,
                           child: ElevatedButton(
                             onPressed: _loading ? null : _submit,
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                             ),
                             child: _loading
                                 ? const CircularProgressIndicator(color: Colors.white)
@@ -117,18 +217,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+
+                        const SizedBox(height: 20),
+
+                        // Toggle Login/Register
                         TextButton(
                           onPressed: () {
                             setState(() {
                               _isLogin = !_isLogin;
+                              _confirmPasswordController.clear(); // Clear when switching
                             });
                           },
                           child: Text(
                             _isLogin
                                 ? "Don't have an account? Register"
                                 : "Already have an account? Login",
-                            style: TextStyle(color: AppColors.primary),
+                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -145,7 +249,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+
     setState(() => _loading = true);
+
     try {
       if (_isLogin) {
         await _auth.signInWithEmailAndPassword(
@@ -158,6 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: _passwordController.text,
         );
       }
+
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const FingerprintEnableScreen()),
