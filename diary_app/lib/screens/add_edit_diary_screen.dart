@@ -36,15 +36,15 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
     super.dispose();
   }
 
+  // Fixed mood button - no overflow
   Widget _moodButton(String emoji, String value, String label) {
     bool isSelected = _selectedMood == value;
     return GestureDetector(
       onTap: () => setState(() => _selectedMood = value),
       child: Container(
-        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary.withOpacity(0.2) : Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.primary : Colors.transparent,
             width: 2,
@@ -53,14 +53,14 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 30)),
-            const SizedBox(height: 2),
+            Text(emoji, style: const TextStyle(fontSize: 26)),
+            const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                fontSize: 9,
+                fontSize: 10,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? AppColors.primary : Theme.of(context).textTheme.bodyMedium?.color,
+                color: isSelected ? AppColors.primary : null,
               ),
               textAlign: TextAlign.center,
             ),
@@ -105,7 +105,6 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
             ),
         ],
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -123,7 +122,7 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Date
+              // Date Picker
               TextField(
                 controller: TextEditingController(
                   text: DateFormat('EEEE, d MMMM yyyy').format(DateTime.parse(_selectedDate)),
@@ -152,20 +151,21 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
               ),
               const SizedBox(height: 28),
 
-              // Mood
+              // Mood Section
               Text(
                 "How are you feeling today?",
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
 
+              // Mood Grid - Fixed overflow
               GridView.count(
                 shrinkWrap: true,
-                crossAxisCount: 4,
-                childAspectRatio: 1,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
                 physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 4,
+                childAspectRatio: 1.15, // Increased for more height
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
                 children: [
                   _moodButton("😊", "happy", "Happy"),
                   _moodButton("😢", "sad", "Sad"),
@@ -179,17 +179,18 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
               ),
               const SizedBox(height: 28),
 
-              // Content box
+              // Content
               SizedBox(
                 height: 300,
                 child: TextFormField(
                   controller: _contentController,
                   maxLines: null,
                   expands: true,
+                  textAlignVertical: TextAlignVertical.top,
                   decoration: const InputDecoration(
                     labelText: "Write your thoughts...",
-                    border: OutlineInputBorder(),
                     alignLabelWithHint: true,
+                    border: OutlineInputBorder(),
                   ),
                   validator: (val) => val!.isEmpty ? "Please write something" : null,
                 ),
@@ -217,7 +218,7 @@ class _AddEditDiaryScreenState extends State<AddEditDiaryScreen> {
                         await DatabaseService.instance.updateEntry(newEntry);
                       }
                       if (mounted) Navigator.pop(context);
-                    } else {
+                    } else if (_selectedMood == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Please select your mood"),

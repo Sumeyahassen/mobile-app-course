@@ -58,14 +58,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _getMoodEmoji(String mood) {
     switch (mood) {
-      case "happy": return "😊";
-      case "sad": return "😢";
-      case "excited": return "😍";
-      case "calm": return "😌";
-      case "angry": return "😤";
-      case "anxious": return "😰";
-      case "confident": return "😎";
-      default: return "😐";
+      case "happy":
+        return "😊";
+      case "sad":
+        return "😢";
+      case "excited":
+        return "😍";
+      case "calm":
+        return "😌";
+      case "angry":
+        return "😤";
+      case "anxious":
+        return "😰";
+      case "confident":
+        return "😎";
+      default:
+        return "😐";
     }
   }
 
@@ -81,7 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Daily Diary", style: GoogleFonts.playfairDisplay(fontSize: 28, fontWeight: FontWeight.bold)),
+        title: Text(
+          "Daily Diary",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         actions: [
@@ -96,7 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await _auth.signOut();
-              if (mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+              if (mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+              }
             },
           ),
         ],
@@ -128,11 +147,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Icon(Icons.menu_book, size: 80, color: Colors.grey[400]),
                               const SizedBox(height: 20),
-                              Text("No entries yet", style: TextStyle(fontSize: 20, color: Colors.grey[600])),
-                              const Text("Tap + to start writing"),
+                              Text(
+                                "No entries yet",
+                                style: TextStyle(fontSize: 20, color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                "Tap + to start writing",
+                                style: TextStyle(color: Colors.grey[500]),
+                              ),
                             ],
                           )
-                        : const Text("No entries found", style: TextStyle(fontSize: 18)),
+                        : const Text(
+                            "No entries found",
+                            style: TextStyle(fontSize: 18),
+                          ),
                   )
                 : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -171,24 +200,44 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(bottom: 16),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(20),
-                            title: Text(entry.title.isEmpty ? "Untitled" : entry.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                            title: Text(
+                              entry.title.isEmpty ? "Untitled" : entry.title,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    Text(DateFormat('EEEE, d MMMM yyyy').format(DateTime.parse(entry.date)), style: TextStyle(color: Colors.grey[600])),
-                                    const Spacer(),
-                                    Text(_getMoodEmoji(entry.mood), style: const TextStyle(fontSize: 24)),
+                                    Expanded(
+                                      child: Text(
+                                        DateFormat('EEEE, d MMMM yyyy').format(DateTime.parse(entry.date)),
+                                        style: TextStyle(color: Colors.grey[600]),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      _getMoodEmoji(entry.mood),
+                                      style: const TextStyle(fontSize: 28),
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                Text(entry.content.length > 100 ? "${entry.content.substring(0, 100)}..." : entry.content),
+                                Text(
+                                  entry.content.length > 100
+                                      ? "${entry.content.substring(0, 100)}..."
+                                      : entry.content,
+                                  style: const TextStyle(fontSize: 15),
+                                ),
                               ],
                             ),
                             onTap: () async {
-                              await Navigator.push(context, MaterialPageRoute(builder: (_) => AddEditDiaryScreen(entry: entry)));
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => AddEditDiaryScreen(entry: entry)),
+                              );
                               _loadEntries();
                             },
                           ),
@@ -199,10 +248,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await Navigator.push(context, MaterialPageRoute(builder: (_) => const AddEditDiaryScreen()));
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddEditDiaryScreen()),
+          );
           _loadEntries();
         },
         backgroundColor: AppColors.primary,
