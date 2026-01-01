@@ -59,15 +59,43 @@ class _FingerprintUnlockScreenState extends State<FingerprintUnlockScreen>
           transitionDuration: const Duration(milliseconds: 600),
         ),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: const Text("Fingerprint not recognized. Try again."),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      setState(() => _isAuthenticating = false);
     }
+    else {
+  String title = "Authentication Failed";
+  String message = "Fingerprint not recognized. Please try again.";
+
+  // Check if device supports biometrics
+  try {
+    final canCheck = await _fingerprintService.canCheckBiometrics();
+    if (!canCheck) {
+      title = "Biometrics Not Available";
+      message = "Fingerprint authentication is not set up on this device.";
+    }
+  } catch (_) {}
+
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      icon: const Icon(Icons.fingerprint, color: Colors.orange, size: 48),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      content: Text(message, style: const TextStyle(fontSize: 16)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text("Try Again"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(ctx);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+          },
+          child: const Text("Use Password"),
+        ),
+      ],
+    ),
+  );
+}
   }
 
   @override
