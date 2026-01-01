@@ -63,14 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text("Send"),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancel")),
+          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Send")),
         ],
       ),
     );
@@ -78,26 +72,48 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result == true) {
       final email = emailController.text.trim();
       if (email.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enter your email")),
-        );
+        _showErrorDialog("Missing Email", "Please enter your email address.");
         return;
       }
 
       try {
         await _auth.sendPasswordResetEmail(email: email);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Password reset email sent! Check your inbox (and spam folder)."),
-            backgroundColor: Colors.green,
-          ),
-        );
+        _showSuccessDialog("Email Sent!", "Check your inbox (and spam folder) for the reset link.");
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e"), backgroundColor: Colors.redAccent),
-        );
+        _showErrorDialog("Error", "Failed to send reset email. Please try again.");
       }
     }
+  }
+
+  // Reusable Alert Dialogs
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        icon: const Icon(Icons.error_outline, color: Colors.red, size: 48),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("OK")),
+        ],
+      ),
+    );
+  }
+
+  void _showSuccessDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 48),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("OK")),
+        ],
+      ),
+    );
   }
 
   @override
@@ -111,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // App Logo
+                  // Logo
                   Icon(Icons.book_outlined, size: 100, color: AppColors.primary),
                   const SizedBox(height: 30),
 
@@ -131,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        // Email Field
+                        // Email
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -140,18 +156,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             prefixIcon: Icon(Icons.email_outlined),
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter your email";
-                            }
-                            if (!value.contains('@')) {
-                              return "Please enter a valid email";
-                            }
+                            if (value == null || value.isEmpty) return "Please enter your email";
+                            if (!value.contains('@')) return "Please enter a valid email";
                             return null;
                           },
                         ),
                         const SizedBox(height: 16),
 
-                        // Password Field
+                        // Password
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
@@ -159,28 +171,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             labelText: "Password",
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
+                              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                             ),
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter your password";
-                            }
-                            if (value.length < 6) {
-                              return "Password must be at least 6 characters";
-                            }
+                            if (value == null || value.isEmpty) return "Please enter your password";
+                            if (value.length < 6) return "Password must be at least 6 characters";
                             return null;
                           },
                         ),
 
-                        // Confirm Password (only in Register mode)
+                        // Confirm Password (Register only)
                         if (!_isLogin) ...[
                           const SizedBox(height: 16),
                           TextFormField(
@@ -190,20 +192,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelText: "Confirm Password",
                               prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureConfirmPassword = !_obscureConfirmPassword;
-                                  });
-                                },
+                                icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                               ),
                             ),
                             validator: (value) {
-                              if (value != _passwordController.text) {
-                                return "Passwords do not match";
-                              }
+                              if (value != _passwordController.text) return "Passwords do not match";
                               return null;
                             },
                           ),
@@ -211,31 +205,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: 20),
 
-                        // Forgot Password Link (only in Login mode)
+                        // Forgot Password (Login only)
                         if (_isLogin)
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: _forgotPassword,
-                              child: Text(
-                                "Forgot Password?",
-                                style: TextStyle(color: AppColors.primary),
-                              ),
+                              child: Text("Forgot Password?", style: TextStyle(color: AppColors.primary)),
                             ),
                           ),
 
                         const SizedBox(height: 12),
 
-                        // Login / Register Button
+                        // Submit Button
                         SizedBox(
                           width: double.infinity,
                           height: 56,
                           child: ElevatedButton(
                             onPressed: _loading ? null : _submit,
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                             ),
                             child: _loading
                                 ? const CircularProgressIndicator(color: Colors.white)
@@ -248,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: 20),
 
-                        // Toggle Login/Register
+                        // Toggle Mode
                         TextButton(
                           onPressed: () {
                             setState(() {
@@ -260,10 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _isLogin
                                 ? "Don't have an account? Register"
                                 : "Already have an account? Login",
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -278,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Submit Login or Register
+  // Login / Register Submit
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -303,35 +289,35 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      String message = "An error occurred. Please try again.";
+      String title = "Login Failed";
+      String message = "An unexpected error occurred.";
+
       if (e is FirebaseAuthException) {
         switch (e.code) {
           case 'user-not-found':
           case 'wrong-password':
-            message = "Invalid email or password. Please try again.";
+            title = "Invalid Credentials";
+            message = "The email or password you entered is incorrect.";
             break;
           case 'invalid-email':
+            title = "Invalid Email";
             message = "Please enter a valid email address.";
             break;
           case 'network-request-failed':
-            message = "No internet connection. Please check your network.";
+            title = "No Internet";
+            message = "Please check your internet connection and try again.";
             break;
           case 'too-many-requests':
-            message = "Too many attempts. Please try again later.";
+            title = "Too Many Attempts";
+            message = "You've tried too many times. Please wait a few minutes.";
             break;
           default:
-            message = e.message ?? message;
+            message = e.message ?? "Please try again.";
         }
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: Colors.redAccent,
-            duration: const Duration(seconds: 5),
-          ),
-        );
+        _showErrorDialog(title, message);
       }
     } finally {
       if (mounted) setState(() => _loading = false);

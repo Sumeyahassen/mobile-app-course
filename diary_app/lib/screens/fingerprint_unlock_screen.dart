@@ -1,8 +1,8 @@
 // lib/screens/fingerprint_unlock_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../constants.dart';
-import '../services/fingerprint_service.dart';
+import 'package:diary_app/constants.dart';
+import 'package:diary_app/services/fingerprint_service.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 
@@ -49,6 +49,7 @@ class _FingerprintUnlockScreenState extends State<FingerprintUnlockScreen>
     if (!mounted) return;
 
     if (success) {
+      // Success — go to home with smooth fade
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -59,43 +60,52 @@ class _FingerprintUnlockScreenState extends State<FingerprintUnlockScreen>
           transitionDuration: const Duration(milliseconds: 600),
         ),
       );
-    }
-    else {
-  String title = "Authentication Failed";
-  String message = "Fingerprint not recognized. Please try again.";
+    } else {
+      // Failed — show friendly AlertDialog
+      String title = "Authentication Failed";
+      String message = "Fingerprint not recognized. Please try again.";
 
-  // Check if device supports biometrics
-  try {
-    final canCheck = await _fingerprintService.canCheckBiometrics();
-    if (!canCheck) {
-      title = "Biometrics Not Available";
-      message = "Fingerprint authentication is not set up on this device.";
-    }
-  } catch (_) {}
+      try {
+        final canCheck = await _fingerprintService.canCheckBiometrics();
+        if (!canCheck) {
+          title = "Biometrics Not Available";
+          message = "Fingerprint is not set up on this device. Please use your password.";
+        }
+      } catch (_) {
+        message = "Unable to check fingerprint settings.";
+      }
 
-  showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      icon: const Icon(Icons.fingerprint, color: Colors.orange, size: 48),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      content: Text(message, style: const TextStyle(fontSize: 16)),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(ctx),
-          child: const Text("Try Again"),
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          icon: const Icon(Icons.fingerprint, color: Colors.orange, size: 48),
+          title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          content: Text(message, style: const TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                _authenticate(); // Try again
+              },
+              child: const Text("Try Again"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+              },
+              child: const Text("Use Password"),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(ctx);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
-          },
-          child: const Text("Use Password"),
-        ),
-      ],
-    ),
-  );
-}
+      );
+    }
+
+    setState(() => _isAuthenticating = false);
   }
 
   @override
@@ -176,12 +186,12 @@ class _FingerprintUnlockScreenState extends State<FingerprintUnlockScreen>
 
                   const SizedBox(height: 100),
 
-                  // Try again button (only show if failed)
+                  // Try Again button (shown when not authenticating)
                   if (!_isAuthenticating)
                     ElevatedButton.icon(
                       onPressed: _authenticate,
                       icon: const Icon(Icons.fingerprint),
-                      label: const Text("Try Again"),
+                      label: const Text("Try Again", style: TextStyle(fontSize: 16)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
@@ -198,7 +208,7 @@ class _FingerprintUnlockScreenState extends State<FingerprintUnlockScreen>
                         MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
                     },
-                    child:const Text(
+                    child: Text(
                       "Use Email & Password",
                       style: TextStyle(
                         color: AppColors.primary,
