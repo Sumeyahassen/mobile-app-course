@@ -15,7 +15,7 @@ debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("Flutter greade"),
+          title: Text("class one"),
           backgroundColor: Colors.blue,
           centerTitle: true,
         ),
