@@ -4,6 +4,16 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return  Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.blue,
+      leading: BackButton(color: Colors.white,),
+      title: Text("Profile Info",style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),),
+    ),
+      body: Container(
+
+      )
+
+    );
   }
 }
