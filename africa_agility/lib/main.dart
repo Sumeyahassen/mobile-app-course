@@ -1,5 +1,6 @@
 import 'package:africa_agility/profile.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:africa_agility/Rprofile.dart';
 // import 'package:africa_agility/card.dart';
 // import 'package:africa_agility/project1.dart';
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
 debugShowCheckedModeBanner: false,
-      home: Profile()
+      home: Rprofile()
     );
   }
 }
