@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 class Card extends StatelessWidget {
   const Card({super.key});
-
+  // Scaffold(
+  // body: Center(
+  // child: Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
+  // child: TextField(
+  // decoration: InputDecoration(
+  // label:Text("Name") ,
+  // prefixIcon: Icon(Icons.insert_emoticon_outlined),
+  // border: OutlineInputBorder(),
+  // hintText: "Full Name",
+  //
+  // ),
+  //
+  // ),),
+  // ),
+  // );
   @override
   Widget build(BuildContext context) {
     return  Center(

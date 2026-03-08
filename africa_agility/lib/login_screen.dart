@@ -4,20 +4,21 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        d
-        child: Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
-        child: TextField(
-          decoration: InputDecoration(
-            label:Text("Name") ,
-            prefixIcon: Icon(Icons.insert_emoticon_outlined),
-            border: OutlineInputBorder(),
-            hintText: "Full Name",
-
-          ),
-
-        ),),
+    return Scaffold(
+      body: SafeArea(child:
+      Padding(padding:const EdgeInsetsGeometry.symmetric(horizontal: 12,vertical: 22),
+        child: Column(
+          children: [
+            IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios,size: 20,)),
+            SizedBox(
+              height: 40,
+            ),
+            Text("Glad you're back",
+                // style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),
+            )
+          ],
+        ),
+      )
       ),
     );
   }
