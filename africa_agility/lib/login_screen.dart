@@ -6,7 +6,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child:
-      Padding(padding:const EdgeInsetsGeometry.symmetric(horizontal: 12,vertical: 22),
+      Padding(padding:const EdgeInsets.symmetric(horizontal: 12,vertical: 22),
         child: Column(
           children: [
             IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios,size: 20,)),
@@ -14,8 +14,39 @@ class LoginScreen extends StatelessWidget {
               height: 40,
             ),
             Text("Glad you're back",
-                // style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),
-            )
+                style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+           Column(
+            
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Name",
+                      label: Text("Full Name"),
+                      prefixIcon: Icon(Icons.person_outline),
+                      border: OutlineInputBorder()
+
+
+                    ),
+                    
+                  ),
+                  SizedBox(
+                    height: 12,),
+                   TextField(
+                    decoration:InputDecoration(
+                      hintText: "Email",
+                      label: Text("Email"),
+                      prefixIcon: Icon(Icons.email_outlined),
+                      border:OutlineInputBorder(),
+
+                    ),
+                  ),
+                ],
+            ),
+        
           ],
         ),
       )
