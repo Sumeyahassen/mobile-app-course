@@ -8,6 +8,7 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(child:
       Padding(padding:const EdgeInsets.symmetric(horizontal: 12,vertical: 22),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios,size: 20,)),
             SizedBox(
@@ -17,35 +18,57 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),
             ),
             SizedBox(
-              height: 10,
+              height: 50,
             ),
-           Column(
-            
+            SizedBox(
+              width: 360,
+              child: Column(
+
                 children: [
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Name",
-                      label: Text("Full Name"),
-                      prefixIcon: Icon(Icons.person_outline),
-                      border: OutlineInputBorder()
+                        hintText: "Name",
+                        label: Text("Full Name"),
+                        suffixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder()
 
 
                     ),
-                    
+
                   ),
                   SizedBox(
                     height: 12,),
-                   TextField(
+                  TextField(
                     decoration:InputDecoration(
-                      hintText: "Email",
-                      label: Text("Email"),
-                      prefixIcon: Icon(Icons.email_outlined),
+                      hintText: "********",
+                      label: Text("Password"),
+                      suffixIcon: Icon(Icons.remove_red_eye_rounded),
                       border:OutlineInputBorder(),
 
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 60,
+                      width: 360,
+                    child: ElevatedButton(onPressed: (){},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:const Color(0x11ff111f),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(10),
+                          side:BorderSide(color: Color(0x11ff11ff))
+                        )
+                      ),
+
+                    child: Text("Login",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: .w600),),),
+                  )
                 ],
+              ),
+
             ),
+
         
           ],
         ),
