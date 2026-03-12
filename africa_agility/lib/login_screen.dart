@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w600,fontSize: 24),
             ),
             SizedBox(
-              height: 50,
+              height: 40,
             ),
             SizedBox(
               width: 360,
@@ -47,15 +47,15 @@ class LoginScreen extends StatelessWidget {
                       label: Text("Password"),
                       suffixIcon: Icon(Icons.remove_red_eye_rounded),
                       enabledBorder:passwordBorderStyle,
-                      focusedBorder:passwordBorderStyle
-
+                      focusedBorder:passwordBorderStyle,
                     ),
+
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   SizedBox(
-                    height: 60,
+                    height: 50,
                       width: 360,
                     child: ElevatedButton(onPressed: (){},
                       style: ElevatedButton.styleFrom(
