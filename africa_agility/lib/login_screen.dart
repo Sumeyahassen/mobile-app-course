@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+final passwordBorderStyle=OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.red)
+);
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -43,19 +46,8 @@ class LoginScreen extends StatelessWidget {
                       hintText: "********",
                       label: Text("Password"),
                       suffixIcon: Icon(Icons.remove_red_eye_rounded),
-                      enabledBorder:OutlineInputBorder(
-                        borderSide:BorderSide(
-                          color: Colors.red,
-                          width: 2.0
-                        ),
-
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 3.0,
-                        ),
-                      ),
+                      enabledBorder:passwordBorderStyle,
+                      focusedBorder:passwordBorderStyle
 
                     ),
                   ),
