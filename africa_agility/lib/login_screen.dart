@@ -43,7 +43,19 @@ class LoginScreen extends StatelessWidget {
                       hintText: "********",
                       label: Text("Password"),
                       suffixIcon: Icon(Icons.remove_red_eye_rounded),
-                      border:OutlineInputBorder(),
+                      enabledBorder:OutlineInputBorder(
+                        borderSide:BorderSide(
+                          color: Colors.red,
+                          width: 2.0
+                        ),
+
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 3.0,
+                        ),
+                      ),
 
                     ),
                   ),
@@ -55,14 +67,15 @@ class LoginScreen extends StatelessWidget {
                       width: 360,
                     child: ElevatedButton(onPressed: (){},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:const Color(0x11ff111f),
+                        backgroundColor:const Color(0xFF000000),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(10),
                           side:BorderSide(color: Color(0x11ff11ff))
                         )
                       ),
 
-                    child: Text("Login",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: .w600),),),
+                    child: Text("Login",style: TextStyle(color: Colors.white,fontSize: 24,fontWeight: .w600),),
+                    ),
                   )
                 ],
               ),
