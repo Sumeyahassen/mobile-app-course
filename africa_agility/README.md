@@ -1,1 +1,1 @@
-flutter pub add --dev ---> to install dependansy
+flutter pub add --dev ---> to install dependansywise out virsion

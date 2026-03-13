@@ -1,3 +1,4 @@
+import 'package:africa_agility/a3.dart';
 import 'package:africa_agility/login_screen.dart';
 import 'package:africa_agility/profile.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
 debugShowCheckedModeBanner: false,
-      home: LoginScreen()
+      home: A3()
+      // A3()
     );
   }
 }
