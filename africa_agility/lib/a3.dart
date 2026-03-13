@@ -29,9 +29,12 @@ class A3 extends StatelessWidget {
 
                       children: [
                         TextField(
+                          // for usr @gmail.come to sugeste   in keybord
+                          keyboardType:TextInputType.emailAddress ,
                           decoration: InputDecoration(
                               label:Text("Email"),
                               hintText: "example@gmail.com",
+
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey)
                               ),
@@ -42,6 +45,8 @@ class A3 extends StatelessWidget {
                           height: 15,
                         ),
                         TextField(
+                          // for the input contant to be hide
+                          obscureText: true,
                           decoration: InputDecoration(
                               label:Text("Password"),
                               hintText: "********",
