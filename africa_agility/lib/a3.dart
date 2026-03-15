@@ -57,15 +57,11 @@ class _A3State extends State<A3> {
                           decoration: InputDecoration(
                               label:Text("Password"),
                               hintText: "********",
-                              suffixIcon: isTrue?IconButton(onPressed: (){
+                              suffixIcon: IconButton(onPressed: (){
                                 setState(() {
                                   isTrue=!isTrue;
                                 });
-                              }, icon: Icon(Icons.visibility)):IconButton(onPressed: (){
-                                setState(() {
-                                  isTrue=!isTrue;
-                                });
-                              }, icon: Icon(Icons.visibility_off)),
+                              },icon: isTrue?Icon(Icons.visibility_off):Icon(Icons.visibility),),
                               border: OutlineInputBorder()
                           ),
                         ),
