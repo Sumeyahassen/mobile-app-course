@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-class A3 extends StatelessWidget {
+class A3 extends StatefulWidget {
   const A3({super.key});
 
+  @override
+  State<A3> createState() => _A3State();
+}
+
+class _A3State extends State<A3> {
+  // for stateless wiget time  to decelaye the varable for in this
+  bool isTrue=true;
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -46,11 +53,19 @@ class A3 extends StatelessWidget {
                         ),
                         TextField(
                           // for the input contant to be hide
-                          obscureText: true,
+                          obscureText: isTrue,
                           decoration: InputDecoration(
                               label:Text("Password"),
                               hintText: "********",
-                              suffixIcon: Icon(Icons.remove_red_eye_rounded),
+                              suffixIcon: isTrue?IconButton(onPressed: (){
+                                setState(() {
+                                  isTrue=!isTrue;
+                                });
+                              }, icon: Icon(Icons.visibility)):IconButton(onPressed: (){
+                                setState(() {
+                                  isTrue=!isTrue;
+                                });
+                              }, icon: Icon(Icons.visibility_off)),
                               border: OutlineInputBorder()
                           ),
                         ),
